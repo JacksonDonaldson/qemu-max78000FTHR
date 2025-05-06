@@ -29,6 +29,8 @@ static void max78000_soc_initfn(Object *obj)
 
     object_initialize_child(obj, "armv7m", &s->armv7m, TYPE_ARMV7M);
 
+    object_initialize_child(obj, "gcr", &s->gcr, TYPE_MAX78000_GCR);
+
     for (i = 0; i < MAX78000_NUM_ICC; i++) {
         object_initialize_child(obj, "icc[*]", &s->icc[i], TYPE_MAX78000_ICC);
     }
@@ -104,6 +106,10 @@ static void max78000_soc_realize(DeviceState *dev_soc, Error **errp)
         return;
     }
 
+    dev = DEVICE(&s->gcr);
+    sysbus_realize_and_unref(SYS_BUS_DEVICE(dev), errp);
+    sysbus_mmio_map(SYS_BUS_DEVICE(dev), 0, 0x40000000);
+
     for (i = 0; i < MAX78000_NUM_ICC; i++) {
         dev = DEVICE(&(s->icc[i]));
         sysbus_realize_and_unref(SYS_BUS_DEVICE(dev), errp);
@@ -116,6 +122,8 @@ static void max78000_soc_realize(DeviceState *dev_soc, Error **errp)
         if (!sysbus_realize(SYS_BUS_DEVICE(&s->uart[i]), errp)) {
             return;
         }
+        dev->id = g_strdup_printf("uart%d", i);
+
         busdev = SYS_BUS_DEVICE(dev);
         sysbus_mmio_map(busdev, 0, max78000_uart_addr[i]);
         sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m,
@@ -123,7 +131,6 @@ static void max78000_soc_realize(DeviceState *dev_soc, Error **errp)
     }
 
 
-    create_unimplemented_device("globalControl",    0x40000000, 0x400);
     create_unimplemented_device("systemInterface",  0x40000400, 0x400);
     create_unimplemented_device("functionControl",  0x40000800, 0x3400);
     create_unimplemented_device("watchdogTimer0",   0x40003000, 0x400);
