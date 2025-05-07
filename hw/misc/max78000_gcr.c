@@ -161,6 +161,9 @@ static void max78000_gcr_write(void *opaque, hwaddr addr,
             if (val & UART0_RESET) {
                 max78000_gcr_reset_device("uart0");
             }
+            if (val & TRNG_RESET) {
+                max78000_gcr_reset_device("trng");
+            }
             /* TODO: As other devices are implemented, add them here */
             break;
         }
