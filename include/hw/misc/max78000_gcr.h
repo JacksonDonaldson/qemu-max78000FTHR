@@ -88,6 +88,25 @@ OBJECT_DECLARE_SIMPLE_TYPE(Max78000GcrState, MAX78000_GCR)
 #define I2C1_RESET (1 << 0)
 
 
+/* RST1 */
+#define CPU1_RESET (1 << 31)
+
+#define SIMO_RESET (1 << 25)
+#define DVS_RESET (1 << 24)
+
+#define I2C2_RESET (1 << 20)
+#define I2S_RESET (1 << 19)
+
+#define SMPHR_RESET (1 << 16)
+
+#define SPI0_RESET (1 << 11)
+#define AES_RESET (1 << 10)
+#define CRC_RESET (1 << 9)
+
+#define PT_RESET (1 << 1)
+#define I2C1_RESET (1 << 0)
+
+
 #define SYSRAM0_START 0x20000000
 #define SYSRAM1_START 0x20008000
 #define SYSRAM2_START 0x20010000

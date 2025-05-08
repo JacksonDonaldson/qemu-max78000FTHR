@@ -142,6 +142,8 @@ static void max78000_gcr_write(void *opaque, hwaddr addr,
                       RTC_RESET | I2C0_RESET | SPI1_RESET |
                       TMR3_RESET | TMR2_RESET | TMR1_RESET |
                       TMR0_RESET | WDT0_RESET | DMA_RESET;
+
+                max78000_gcr_reset_device("aes");
             }
             if (val & SOFT_RESET) {
                 /* Soft reset also resets GPIO */
@@ -151,6 +153,7 @@ static void max78000_gcr_write(void *opaque, hwaddr addr,
                       TMR3_RESET | TMR2_RESET | TMR1_RESET |
                       TMR0_RESET | GPIO1_RESET | GPIO0_RESET |
                       DMA_RESET;
+                max78000_gcr_reset_device("aes");
             }
             if (val & UART2_RESET) {
                 max78000_gcr_reset_device("uart2");
@@ -164,6 +167,7 @@ static void max78000_gcr_write(void *opaque, hwaddr addr,
             if (val & TRNG_RESET) {
                 max78000_gcr_reset_device("trng");
             }
+
             /* TODO: As other devices are implemented, add them here */
             break;
         }
@@ -208,7 +212,10 @@ static void max78000_gcr_write(void *opaque, hwaddr addr,
         }
         case RST1:{
             /* TODO: As other devices are implemented, add them here */
-            s->rst1 = val;
+            if (val & AES_RESET) {
+                max78000_gcr_reset_device("aes");
+            }
+
             break;
         }
         case PCKDIS1:{
